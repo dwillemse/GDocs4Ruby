@@ -1,3 +1,20 @@
+# Author:: Mike Reich (mike@seabourneconsulting.com)
+# Copyright:: Copyright (C) 2010 Mike Reich
+# License:: GPL v2
+#--
+# Licensed under the General Public License (GPL), Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# Feel free to use and update, but be sure to contribute your
+# code back to the project and attribute as required by the license.
+#++
 require 'gdocs4ruby/base' 
 require 'gdocs4ruby/base_object'
 require 'gdocs4ruby/folder'
@@ -7,24 +24,24 @@ require 'gdocs4ruby/presentation'
 
 module GDocs4Ruby
 
-#The service class is the main handler for all direct interactions with the 
-#Google Calendar API.  A service represents a single user account.  Each user
-#account can have multiple calendars, so you'll need to find the calendar you
-#want from the service, using the Calendar#find class method.
-#=Usage
-#
-#1. Authenticate
-#    service = Service.new
-#    service.authenticate("user@gmail.com", "password")
-#
-#2. Get Document List
-#    documents = service.documents
-#
-#3. Get Folder List
-#    folders = serivce.folders
-#
 DOCUMENT_LIST_FEED = "https://docs.google.com/feeds/documents/private/full"
 FOLDER_LIST_FEED = "http://docs.google.com/feeds/documents/private/full/-/folder?showfolders=true"
+
+  #The service class is the main handler for all direct interactions with the 
+  #Google Documents API.  A service represents a single user account.  Each user
+  #account can have multiple documents and folders.
+  #=Usage
+  #
+  #1. Authenticate
+  #    service = Service.new
+  #    service.authenticate("user@gmail.com", "password")
+  #
+  #2. Get Document List
+  #    documents = service.files
+  #
+  #3. Get Folder List
+  #    folders = serivce.folders
+  #
   class Service < GData4Ruby::Service    
     #Accepts an optional attributes hash for initialization values
     def initialize(attributes = {})
@@ -37,6 +54,7 @@ FOLDER_LIST_FEED = "http://docs.google.com/feeds/documents/private/full/-/folder
       super(username, password, service)
     end
     
+    #Helper function to reauthenticate to a new Google service without having to re-set credentials.
     def reauthenticate(service='writely')
       authenticate(@account, @password, service)
     end
@@ -59,6 +77,9 @@ FOLDER_LIST_FEED = "http://docs.google.com/feeds/documents/private/full/-/folder
       return folders
     end
     
+    #Returns an array of objects for each document in the account.  Note that this 
+    #method will return all documents for the account, including documents contained in
+    #subfolders.
     def files
       contents = []
       ret = send_request(GData4Ruby::Request.new(:get, DOCUMENT_LIST_FEED))

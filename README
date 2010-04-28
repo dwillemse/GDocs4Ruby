@@ -1,0 +1,76 @@
+#=GDocs4Ruby
+#
+#==Introduction
+#GDocs4Ruby is a full featured wrapper for version 2.0 of the Google Documents API (aka DocList).  GDocs4Ruby provides the ability
+#to create, update and delete google documents, metadata and content.  The gem also includes support for folders, modifying
+#permissions for documents via ACL feeds, and much more.
+#
+#GDocs4Ruby uses the GData4Ruby Gem for interacting with the Google API.  Check out http://cookingandcoding.com/gdata4ruby for 
+#other Google API Libraries based using GData4Ruby.
+#
+#==Author and Contact Information
+#GDocs4Ruby was created and is maintained by {Mike Reich}[mailto:mike@seabourneconsulting.com] 
+#and is licenses under the GPL v2.  Feel free to use and update, but be sure to contribute your
+#code back to the project and attribute as required by the license.
+#===Website
+#http://cookingandcoding.com/gdocs4ruby/
+#
+#==Description
+#GDocs4Ruby includes the following classes: Service, Folder, BaseObject, Spreadsheet, Document, Presentation.
+#
+#The Service object provides functionality for authenticating with the Google Documents API, grabbing a list of 
+#documents and a list of folders associated with the account.
+#
+#Interacting with objects is done by using the associated subclass of BaseObject, i.e. Document.  Every object
+#class supports the same inherited methods for creating, updating and deleting, in addition to changing
+#ACL permissions, and adding and removing from various folders.
+#
+#==Examples
+#Below are some common usage examples.  For more examples, check the documentation.  Also, check out the example code
+#for integrating with Rails at http://cookingandcoding.com/gdocs4ruby/example/
+#===Service
+#1. Authenticate
+#    service = Service.new
+#    service.authenticate("user@gmail.com", "password")
+#
+#2. Get Document List
+#    documents = service.files
+#
+#3. Get Folder List
+#    folders = serivce.folders
+#
+#===Documents
+#1. Create a new Document
+#    doc = Document.new(@service)
+#    doc.title = 'Test Document'
+#    doc.content = '<h1>Test Content HTML</h1>'
+#    doc.content_type = 'html'
+#    doc.save
+#
+#2. Deleting a Document
+#    doc = Document.find(@service, {:id => @doc_id})
+#    doc.delete
+#
+#3. Finding an existing Document by id
+#    doc = Document.find(@service, {:id => @doc_id})
+#
+#4. Full Text Query
+#    doc = Document.find(@service, 'content text')
+#
+#   or
+#
+#    doc = Document.find(@service, {:query => 'content text'})
+#
+#5. Finding an Existing Document by Title
+#    doc = Document.find(@service, nil, {'title' => 'Test Document'})
+#
+#6. Updating a Document with Content from a Local File
+#    doc = Document.find(@service, {:id => @doc_id})
+#    doc.title = 'New Title'
+#    doc.local_file = '/path/to/some/file'
+#    doc.save
+#
+#7. Retrieving an Export
+#    doc = Document.find(@service, {:id => @doc_id})
+#    doc.download_to_file('pdf', '/path/to/save/location.pdf')
+

@@ -1,4 +1,35 @@
+# Author:: Mike Reich (mike@seabourneconsulting.com)
+# Copyright:: Copyright (C) 2010 Mike Reich
+# License:: GPL v2
+#--
+# Licensed under the General Public License (GPL), Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#
+# Feel free to use and update, but be sure to contribute your
+# code back to the project and attribute as required by the license.
+#++
 module GDocs4Ruby
+  #The Document class represents a Google Documents Folder.
+  #=Usage
+  #Assumes a valid and authenticated @service object.
+  #1. Retrieving a list of folders
+  #    @service.folders
+  #
+  #2. Getting a list of files in a folder
+  #    @folder = @service.folders.first
+  #    @folder.files
+  #
+  #3. Getting a list of sub folders in a folder
+  #    @folder = @service.folders.first
+  #    @folder.sub_folders
+  #
   class Folder < BaseObject
       FOLDER_XML = '<?xml version="1.0" encoding="UTF-8"?>
 <atom:entry xmlns:atom="http://www.w3.org/2005/Atom">
@@ -6,11 +37,8 @@ module GDocs4Ruby
       term="http://schemas.google.com/docs/2007#folder" label="folder"/>
   <atom:title></atom:title>
 </atom:entry>'
-
-    #Returns true if the calendar exists on the Google Calendar system (i.e. was 
-    #loaded or has been saved).  Otherwise returns false.
-    
   
+    #Creates a new Folder instance.  Requires a valid GData4Ruby#Service object.
     def initialize(service, attributes = {})
       super(service, attributes)
       @xml = FOLDER_XML
@@ -31,7 +59,8 @@ module GDocs4Ruby
       return true
     end
     
-    def folders
+    #Returns a list of sub folders that this folder contains.
+    def sub_folders
       ret = service.send_request(GData4Ruby::Request.new(:get, @content_uri+"/-/folder?showfolders=true"))
       folders = []
       REXML::Document.new(ret.body).root.elements.each("entry"){}.map do |entry|
@@ -44,6 +73,7 @@ module GDocs4Ruby
       return folders
     end
     
+    #Returns a list of files in the folder
     def files
       return nil if @content_uri == nil
       contents = []
@@ -67,6 +97,7 @@ module GDocs4Ruby
       return contents
     end
     
+    #Helper function limit queries to Folders.  See BaseObject#find for syntax.  Type is not required and assumed to be 'document'.
     def self.find(service, query, args = {})      
       raise ArgumentError if not query.is_a? Hash and not query.is_a? String
       ret = query.is_a?(String) ? [] : nil
@@ -81,6 +112,7 @@ module GDocs4Ruby
       return ret
     end
     
+    #A reference to the parent folder.  If there is no parent folder, nil is returned.
     def parent
       return nil if @parent_uri == nil
       ret = @service.send_request(GData4Ruby::Request.new(:get, @parent_uri))
@@ -89,12 +121,6 @@ module GDocs4Ruby
       folder = Folder.new(@service)
       folder.load(ret.body)
       return folder
-    end
-    
-    def parent=newParent
-      if newParent.is_a? Folder
-        @parent_link = newParent.id
-      end
     end
   end
 end
