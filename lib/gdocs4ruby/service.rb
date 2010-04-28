@@ -95,9 +95,13 @@ FOLDER_LIST_FEED = "http://docs.google.com/feeds/documents/private/full/-/folder
             doc = Spreadsheet.new(self)
           when 'presentation'
             doc = Presentation.new(self)
+          else
+            doc = BaseObject.new(self)
         end
-        doc.load(ele.to_s)
-        contents << doc
+        if doc
+          doc.load(ele.to_s)
+          contents << doc
+        end
       end
       return contents
     end

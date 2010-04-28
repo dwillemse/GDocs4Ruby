@@ -386,6 +386,8 @@ module GDocs4Ruby
           doc = Folder.new(service)
         when 'presentation'
           doc = Presentation.new(service)
+        else
+          doc = obj
       end
       doc.load(ele.to_s)
       doc

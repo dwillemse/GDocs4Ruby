@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
    s.name = %q{gdocs4ruby}
-   s.version = "0.1.0"
+   s.version = "0.1.1"
    s.date = %q{2010-03-12}
    s.authors = ["Mike Reich"]
    s.email = %q{mike@seabourneconsulting.com}
